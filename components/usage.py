@@ -9,14 +9,23 @@ import plotly.graph_objects as go
 from datetime import datetime
 import pandas as pd
 
-from src.flexprice import FlexpriceClient, BillingDashboard
+# Optional import for development
+try:
+    from src.flexprice import FlexpriceClient, BillingDashboard
+except ImportError:
+    FlexpriceClient = None
+    BillingDashboard = None
 
 class UsageDashboardComponent:
     """Usage and billing dashboard for sidebar"""
     
     def __init__(self):
-        self.flexprice_client = FlexpriceClient()
-        self.billing_dashboard = BillingDashboard(self.flexprice_client)
+        if FlexpriceClient:
+            self.flexprice_client = FlexpriceClient()
+            self.billing_dashboard = BillingDashboard(self.flexprice_client)
+        else:
+            self.flexprice_client = None
+            self.billing_dashboard = None
     
     def render(self):
         """Render the complete usage dashboard"""

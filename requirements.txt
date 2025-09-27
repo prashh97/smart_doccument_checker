@@ -3,36 +3,18 @@ streamlit>=1.28.0
 
 # LLM Integration
 google-generativeai>=0.3.0
-openai>=1.0.0
 
 # Document Processing
 python-docx>=0.8.11
 PyPDF2>=3.0.1
 pdfplumber>=0.9.0
-python-magic>=0.4.27
 
 # Data Processing
 pandas>=2.0.0
 numpy>=1.24.0
 
-# Real-time Monitoring (Pathway)
-pathway>=0.post1
-
 # HTTP Requests for APIs
 requests>=2.31.0
-httpx>=0.24.0
 
 # Utilities
 python-dateutil>=2.8.0
-pathlib>=1.0.0
-
-# Optional: For enhanced text processing
-nltk>=3.8.0
-spacy>=3.6.0
-
-# Development/Testing
-pytest>=7.0.0
-pytest-streamlit>=0.1.0
-
-# Deployment
-gunicorn>=21.0.0

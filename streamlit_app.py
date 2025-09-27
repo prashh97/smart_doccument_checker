@@ -16,8 +16,16 @@ sys.path.insert(0, str(src_dir))
 # Import custom modules
 from src.document_processor import DocumentProcessor
 from src.llm_analyser import EnhancedConflictAnalyzer
-from src.flexprice import FlexpriceClient
-from pathway_monitor import PathwayMonitor
+# Optional imports for development
+try:
+    from src.flexprice import FlexpriceClient
+except ImportError:
+    FlexpriceClient = None
+
+try:
+    from pathway_monitor import PathwayMonitor
+except ImportError:
+    PathwayMonitor = None
 
 # Import UI components
 from components.file_uploader import FileUploaderComponent
@@ -71,7 +79,7 @@ def get_app_components():
     components = {
         'document_processor': DocumentProcessor(),
         'llm_analyzer': EnhancedConflictAnalyzer(),
-        'flexprice_client': FlexpriceClient(),
+        'flexprice_client': FlexpriceClient() if FlexpriceClient else None,
         'pathway_monitor': PathwayMonitor(),
         'file_uploader': FileUploaderComponent(),
         'conflict_display': ConflictDisplayComponent(),
