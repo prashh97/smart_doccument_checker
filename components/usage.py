@@ -4,10 +4,18 @@ Usage Dashboard Component for Streamlit Sidebar
 
 import streamlit as st
 from typing import Dict, Any
-import plotly.express as px
-import plotly.graph_objects as go
 from datetime import datetime
 import pandas as pd
+
+# Optional plotly imports for advanced charts
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    px = None
+    go = None
+    PLOTLY_AVAILABLE = False
 
 # Optional import for development
 try:
@@ -99,7 +107,7 @@ class UsageDashboardComponent:
             # Events by type pie chart
             events_by_type = usage_summary.get('events_by_type', {})
             
-            if events_by_type:
+            if events_by_type and PLOTLY_AVAILABLE:
                 # Prepare data for chart
                 labels = list(events_by_type.keys())
                 values = list(events_by_type.values())
@@ -119,6 +127,11 @@ class UsageDashboardComponent:
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
+            elif events_by_type:
+                # Fallback display without charts
+                st.write("**Usage by Event Type:**")
+                for event_type, count in events_by_type.items():
+                    st.write(f"- {event_type}: {count}")
                 
             # Usage timeline
             events = self.flexprice_client.get_usage_events()
@@ -128,13 +141,17 @@ class UsageDashboardComponent:
                 try:
                     # Convert to DataFrame for easier plotting
                     df = pd.DataFrame(events)
-                    if not df.empty and 'timestamp' in df.columns:
+                    if not df.empty and 'timestamp' in df.columns and PLOTLY_AVAILABLE:
                         df['timestamp'] = pd.to_datetime(df['timestamp'])
                         df_hourly = df.groupby([df['timestamp'].dt.hour, 'event_type']).size().reset_index(name='count')
                         
                         fig = px.line(df_hourly, x='timestamp', y='count', color='event_type',
                                     title="Usage Over Time")
                         st.plotly_chart(fig, use_container_width=True)
+                    elif not df.empty and 'timestamp' in df.columns:
+                        # Fallback display without charts
+                        st.write("**Usage Timeline:** Chart visualization unavailable")
+                        st.dataframe(df[['timestamp', 'event_type']].head(10))
                     else:
                         st.info("Not enough usage data for timeline visualization")
                 except Exception as e:
