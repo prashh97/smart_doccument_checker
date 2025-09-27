@@ -17,6 +17,37 @@ class ConflictDisplayComponent:
         self.conflicts = []
         self.current_analysis = None
     
+    def render(self, analysis_results: Dict[str, Any]):
+        """
+        Main render method for displaying analysis results.
+        
+        Args:
+            analysis_results: Complete analysis results dictionary
+        """
+        if not analysis_results:
+            st.info("No analysis results to display")
+            return
+        
+        conflicts = analysis_results.get('conflicts', [])
+        analysis_summary = analysis_results.get('analysis_summary', {})
+        
+        # Render analysis summary
+        if analysis_summary:
+            self.render_analysis_summary(analysis_summary)
+        
+        # Render conflicts
+        self.render_conflicts(conflicts)
+        
+        # Render conflict types chart
+        if conflicts:
+            self.render_conflict_types_chart(conflicts)
+        
+        # Render recommendations
+        self.render_recommendations(conflicts)
+        
+        # Render export options
+        self.render_export_options(conflicts)
+    
     def render_conflicts(self, conflicts: List[Dict[str, Any]]):
         """
         Render conflicts in the main display area.

@@ -123,15 +123,21 @@ class UsageDashboardComponent:
             if events:
                 st.subheader("Usage Timeline")
                 
-                # Convert to DataFrame for easier plotting
-                df = pd.DataFrame(events)
-                if not df.empty and 'timestamp' in df.columns:
-                    df['timestamp'] = pd.to_datetime(df['timestamp'])
-                    df_hourly = df.groupby([df['timestamp'].dt.hour, 'event_type']).size().reset_index(name='count')
-                    
-                    fig = px.line(df_hourly, x='timestamp', y='count', color='event_type',
-                                title="Usage Over Time")
-                    st.plotly_chart(fig, use_container_width=True)
+                try:
+                    # Convert to DataFrame for easier plotting
+                    df = pd.DataFrame(events)
+                    if not df.empty and 'timestamp' in df.columns:
+                        df['timestamp'] = pd.to_datetime(df['timestamp'])
+                        df_hourly = df.groupby([df['timestamp'].dt.hour, 'event_type']).size().reset_index(name='count')
+                        
+                        fig = px.line(df_hourly, x='timestamp', y='count', color='event_type',
+                                    title="Usage Over Time")
+                        st.plotly_chart(fig, use_container_width=True)
+                    else:
+                        st.info("Not enough usage data for timeline visualization")
+                except Exception as e:
+                    st.warning(f"Could not display usage timeline: {str(e)}")
+                    st.info("Usage data will be available after running some analyses")
         else:
             st.info("No usage data available yet. Start analyzing documents to see your usage statistics!")
     

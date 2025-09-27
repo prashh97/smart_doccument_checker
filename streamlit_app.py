@@ -50,10 +50,23 @@ def initialize_session_state():
             'total_conflicts_found': 0,
             'billing_amount': 0.0
         }
+    if 'flexprice_events' not in st.session_state:
+        st.session_state.flexprice_events = []
+    if 'pathway_status' not in st.session_state:
+        st.session_state.pathway_status = {'connected': False, 'last_update': None}
+    if 'billing_session' not in st.session_state:
+        st.session_state.billing_session = {
+            'session_id': 'default_session',
+            'start_time': '2024-01-01T00:00:00Z',
+            'customer_id': 'demo_user',
+            'total_amount': 0.0
+        }
     if 'app_settings' not in st.session_state:
         st.session_state.app_settings = AppSettings()
+    
+    # Always ensure the API key is set (in case it gets reset)
+    st.session_state.app_settings.GEMINI_API_KEY = "AIzaSyBBJ5gMwH0AsuBN92G5i35-zoSEwVq5pWY"
 
-@st.cache_resource
 def get_app_components():
     """Initialize and cache application components"""
     components = {
@@ -71,18 +84,35 @@ def get_app_components():
 def main():
     """Main application function"""
     
-    # Initialize session state
+    # Initialize session state FIRST
     initialize_session_state()
     
-    # Get cached components
+    # Get cached components AFTER session state is initialized
     components = get_app_components()
     
     # App header
     st.title("🔍 Smart Doc Checker Agent")
     st.markdown("**Automatically detect contradictions and conflicts across multiple documents using AI**")
     
-    # Sidebar with usage dashboard
+    # Sidebar with API configuration and usage dashboard
     with st.sidebar:
+        # API Configuration Section
+        st.subheader("🔑 API Status")
+        
+        # Check if API keys are configured
+        api_validations = st.session_state.app_settings.validate_api_keys()
+        
+        # Show API status
+        for service, is_valid in api_validations.items():
+            status = "✅" if is_valid else "❌"
+            st.write(f"{status} {service.title()}")
+        
+        if api_validations.get('gemini', False):
+            st.success("🤖 AI Analysis Ready!")
+        else:
+            st.warning("⚠️ Gemini API not configured")
+        
+        st.divider()
         components['usage_dashboard'].render()
         st.divider()
         components['pathway_monitor'].render_monitor_status()
@@ -113,7 +143,7 @@ def main():
     
     with col2:
         # Results display section
-        if st.session_state.analysis_results:
+        if st.session_state.analysis_results and 'conflicts' in st.session_state.analysis_results:
             components['conflict_display'].render(st.session_state.analysis_results)
             
             # Report generation section
@@ -125,6 +155,14 @@ def main():
 def analyze_documents(uploaded_files, selected_model, analysis_type, components):
     """Process uploaded documents and detect conflicts"""
     
+    # Check if API keys are configured
+    api_validations = st.session_state.app_settings.validate_api_keys()
+    
+    if not api_validations.get('gemini', False):
+        st.error("❌ **Gemini API key not configured!**")
+        st.info("👈 Configure your API key in the sidebar to enable AI analysis.")
+        return
+    
     progress_bar = st.progress(0)
     status_text = st.empty()
     
@@ -135,11 +173,15 @@ def analyze_documents(uploaded_files, selected_model, analysis_type, components)
         
         documents = components['document_processor'].process_uploaded_files(uploaded_files)
         
-        # Step 2: Track billing
+        # Step 2: Track billing (optional)
         status_text.text("💰 Processing billing...")
         progress_bar.progress(35)
         
-        analysis_cost = components['flexprice_client'].track_document_analysis(len(uploaded_files))
+        try:
+            analysis_cost = components['flexprice_client'].track_document_analysis(len(uploaded_files))
+        except Exception as e:
+            st.warning(f"Billing tracking unavailable: {str(e)}")
+            analysis_cost = 0.0
         
         # Step 3: LLM Analysis
         status_text.text(f"🤖 Analyzing with {selected_model.upper()}...")

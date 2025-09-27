@@ -43,20 +43,21 @@ class LLMDocumentAnalyzer:
         api_key = self.model_config.get("api_key")
         if not api_key:
             st.error("Gemini API key not found in configuration")
+            self.model = None
             return
         
-        genai.configure(api_key=api_key)
-        
-        # Configure generation parameters
-        self.generation_config = genai.types.GenerationConfig(
-            temperature=0.1,  # Low temperature for consistent analysis
-            top_p=0.8,
-            top_k=40,
-            max_output_tokens=4000,
-        )
-        
-        # Initialize model
         try:
+            genai.configure(api_key=api_key)
+            
+            # Configure generation parameters
+            self.generation_config = genai.types.GenerationConfig(
+                temperature=0.1,  # Low temperature for consistent analysis
+                top_p=0.8,
+                top_k=40,
+                max_output_tokens=4000,
+            )
+            
+            # Initialize model
             self.model = genai.GenerativeModel(self.model_name)
         except Exception as e:
             st.error(f"Failed to initialize Gemini model: {str(e)}")

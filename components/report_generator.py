@@ -23,6 +23,15 @@ class ReportGeneratorComponent:
             "Detailed Technical Report"
         ]
     
+    def render(self, analysis_results: Dict[str, Any] = None):
+        """
+        Main render method for the report generator.
+        
+        Args:
+            analysis_results: Analysis results to generate reports from
+        """
+        self.render_report_generator(analysis_results)
+    
     def render_report_generator(self, analysis_data: Dict[str, Any] = None):
         """
         Render the report generation interface.

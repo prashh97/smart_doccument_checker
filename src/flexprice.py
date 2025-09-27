@@ -27,15 +27,17 @@ class FlexpriceClient:
     
     def _initialize_usage_tracking(self):
         """Initialize usage tracking in session state"""
-        if 'flexprice_events' not in st.session_state:
+        if not hasattr(st.session_state, 'flexprice_events'):
             st.session_state.flexprice_events = []
-        if 'billing_session' not in st.session_state:
+        if not hasattr(st.session_state, 'billing_session'):
             st.session_state.billing_session = {
                 'session_id': self.session_id,
                 'start_time': datetime.now(timezone.utc).isoformat(),
                 'customer_id': self._get_customer_id(),
                 'total_amount': 0.0
             }
+        if not hasattr(st.session_state, 'customer_id'):
+            st.session_state.customer_id = f"demo_user_{uuid.uuid4().hex[:8]}"
     
     def _get_customer_id(self) -> str:
         """Get or generate customer ID"""
@@ -211,6 +213,10 @@ class FlexpriceClient:
     def get_usage_summary(self) -> Dict[str, Any]:
         """Get current session usage summary"""
         
+        # Initialize if not exists
+        if not hasattr(st.session_state, 'flexprice_events'):
+            st.session_state.flexprice_events = []
+        
         if not st.session_state.flexprice_events:
             return {
                 "total_events": 0,
@@ -252,6 +258,14 @@ class FlexpriceClient:
     
     def get_detailed_usage(self) -> List[Dict[str, Any]]:
         """Get detailed usage events for the current session"""
+        return st.session_state.flexprice_events.copy()
+    
+    def get_usage_events(self) -> List[Dict[str, Any]]:
+        """Get usage events for timeline visualization"""
+        # Initialize if not exists
+        if not hasattr(st.session_state, 'flexprice_events'):
+            st.session_state.flexprice_events = []
+        
         return st.session_state.flexprice_events.copy()
     
     def export_usage_data(self) -> str:
