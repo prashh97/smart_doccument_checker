@@ -68,7 +68,7 @@ class AppSettings:
         # Pricing
         self.PRICING = {
             "document_analysis": 0.10,  # per document
-            "report_generation": 0.25,  # per report
+            "report_generation": 0.25,  # per reports
             "premium_analysis": 0.50    # for advanced features
         }
     

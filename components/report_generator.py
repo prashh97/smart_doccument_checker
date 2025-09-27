@@ -133,6 +133,10 @@ class ReportGeneratorComponent:
                 st.error("Invalid report type selected")
                 return
             
+            # Update usage statistics
+            if 'usage_stats' in st.session_state:
+                st.session_state.usage_stats['reports_generated'] += 1
+            
             # Display report
             st.success("✅ Report generated successfully!")
             

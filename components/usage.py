@@ -43,8 +43,7 @@ class UsageDashboardComponent:
         usage_stats = st.session_state.get('usage_stats', {
             'docs_analyzed': 0,
             'reports_generated': 0,
-            'total_conflicts_found': 0,
-            'billing_amount': 0.0
+            'total_conflicts_found': 0
         })
         
         # Primary metrics
@@ -64,12 +63,6 @@ class UsageDashboardComponent:
             "Conflicts Found",
             usage_stats.get('total_conflicts_found', 0),
             help="Total conflicts detected across all analyses"
-        )
-        
-        st.metric(
-            "Session Cost",
-            f"${usage_stats.get('billing_amount', 0.0):.2f}",
-            help="Total cost for current session"
         )
         
         # API Connection Status

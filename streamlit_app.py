@@ -47,8 +47,7 @@ def initialize_session_state():
         st.session_state.usage_stats = {
             'docs_analyzed': 0,
             'reports_generated': 0,
-            'total_conflicts_found': 0,
-            'billing_amount': 0.0
+            'total_conflicts_found': 0
         }
     if 'flexprice_events' not in st.session_state:
         st.session_state.flexprice_events = []
@@ -217,7 +216,6 @@ def analyze_documents(uploaded_files, selected_model, analysis_type, components)
         # Update usage stats
         st.session_state.usage_stats['docs_analyzed'] += len(uploaded_files)
         st.session_state.usage_stats['total_conflicts_found'] += len(conflicts)
-        st.session_state.usage_stats['billing_amount'] += analysis_cost
         
         # Clear progress
         progress_bar.empty()
