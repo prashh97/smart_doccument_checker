@@ -2,7 +2,7 @@
 Flexprice Client Module
 Handles usage tracking and billing integration
 """
-
+import requests
 import streamlit as st
 import requests
 import json
@@ -477,3 +477,23 @@ class BillingDashboard:
                     st.success(status["message"])
                 else:
                     st.warning(status["message"])
+
+
+url = "https://api.cloud.flexprice.io/v1/secrets/api/keys"
+
+payload = {
+    "name": "ctrl+hack+win",
+    "type": "integration"
+}
+headers = {
+    "x-api-key": "<sk_01K65A8E8BWSR33Q95PB4XGMJS>",
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+
+print(response.json())
+
+
+
+                  

@@ -2,11 +2,13 @@
 Pathway Monitor Module
 Real-time monitoring functionality for document processing workflows
 """
-
+import pathway as pw
 import streamlit as st
 import time
 from datetime import datetime
 from typing import Dict, Any, List, Optional
+
+
 
 
 class PathwayMonitor:
@@ -143,6 +145,7 @@ try:
         """Create a pathway data stream for document monitoring."""
         monitor.add_stream(f"pathway_stream_{source_path}")
         # Placeholder for actual pathway stream creation
+        pw.set_license_key("12BC67-307B7D-C431A9-45D169-9EFE70-V3")
         return None
     
     def process_with_pathway(data, monitor: PathwayMonitor):
