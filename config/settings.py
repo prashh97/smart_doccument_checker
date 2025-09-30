@@ -29,10 +29,10 @@ class AppSettings:
             pathway_settings = {}
         
         # API Keys (with environment variable fallback)
-        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyBBJ5gMwH0AsuBN92G5i35-zoSEwVq5pWY"))
+        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
         self.OPENAI_API_KEY = api_keys.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         self.GROK_API_KEY = api_keys.get("GROK_API_KEY", os.getenv("GROK_API_KEY", ""))
-        self.FLEXPRICE_API_KEY = api_keys.get("FLEXPRICE_API_KEY", os.getenv("FLEXPRICE_API_KEY", "sk_01K65CTVWFEK7MGK7T9NZGJ42D"))
+        self.FLEXPRICE_API_KEY = api_keys.get("FLEXPRICE_API_KEY", os.getenv("FLEXPRICE_API_KEY", ""))
         
         # App Settings
         self.DEBUG = app_settings.get("DEBUG", os.getenv("DEBUG", "false").lower() == "true")
@@ -41,7 +41,7 @@ class AppSettings:
         self.DEFAULT_MODEL = app_settings.get("DEFAULT_MODEL", os.getenv("DEFAULT_MODEL", "gemini-2.5-flash"))
         
         # Pathway Settings
-        self.PATHWAY_LICENSE_KEY = pathway_settings.get("PATHWAY_LICENSE_KEY", os.getenv("PATHWAY_LICENSE_KEY", "12BC67-307B7D-C431A9-45D169-9EFE70-V3"))
+        self.PATHWAY_LICENSE_KEY = pathway_settings.get("PATHWAY_LICENSE_KEY", os.getenv("PATHWAY_LICENSE_KEY", ""))
         self.EXTERNAL_MONITOR_URL = pathway_settings.get("EXTERNAL_MONITOR_URL", os.getenv("EXTERNAL_MONITOR_URL", ""))
         self.MONITOR_INTERVAL = pathway_settings.get("MONITOR_INTERVAL", int(os.getenv("MONITOR_INTERVAL", "30")))
         
