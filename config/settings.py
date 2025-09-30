@@ -32,7 +32,7 @@ class AppSettings:
         self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyBBJ5gMwH0AsuBN92G5i35-zoSEwVq5pWY"))
         self.OPENAI_API_KEY = api_keys.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         self.GROK_API_KEY = api_keys.get("GROK_API_KEY", os.getenv("GROK_API_KEY", ""))
-        self.FLEXPRICE_API_KEY = api_keys.get("FLEXPRICE_API_KEY", os.getenv("FLEXPRICE_API_KEY", "sk_01K65A8E8BWSR33Q95PB4XGMJS"))
+        self.FLEXPRICE_API_KEY = api_keys.get("FLEXPRICE_API_KEY", os.getenv("FLEXPRICE_API_KEY", "sk_01K65CTVWFEK7MGK7T9NZGJ42D"))
         
         # App Settings
         self.DEBUG = app_settings.get("DEBUG", os.getenv("DEBUG", "false").lower() == "true")
