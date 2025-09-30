@@ -1,1 +1,0 @@
-# smart_doccument_checker
