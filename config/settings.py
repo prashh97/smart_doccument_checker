@@ -27,7 +27,7 @@ class AppSettings:
             app_settings = {}
         
         # API Keys (with environment variable fallback)
-        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
+        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyCFkuAk0J-FlFIEbZkdtebt8dIXxibV0FE"))
         self.OPENAI_API_KEY = api_keys.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         self.GROK_API_KEY = api_keys.get("GROK_API_KEY", os.getenv("GROK_API_KEY", ""))
         
