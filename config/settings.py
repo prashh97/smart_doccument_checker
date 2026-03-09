@@ -1,7 +1,7 @@
 """
 Application Settings and Configuration Management
 """
-import pathway as pw
+
 import streamlit as st
 from pathlib import Path
 from typing import Dict, Any
@@ -21,29 +21,21 @@ class AppSettings:
         try:
             api_keys = st.secrets.get("api_keys", {})
             app_settings = st.secrets.get("app_settings", {})
-            pathway_settings = st.secrets.get("pathway_settings", {})
         except:
             # If secrets are not available, use empty dictionaries
             api_keys = {}
             app_settings = {}
-            pathway_settings = {}
         
         # API Keys (with environment variable fallback)
-        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", ""))
+        self.GEMINI_API_KEY = api_keys.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "AIzaSyCFkuAk0J-FlFIEbZkdtebt8dIXxibV0FE"))
         self.OPENAI_API_KEY = api_keys.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
         self.GROK_API_KEY = api_keys.get("GROK_API_KEY", os.getenv("GROK_API_KEY", ""))
-        self.FLEXPRICE_API_KEY = api_keys.get("FLEXPRICE_API_KEY", os.getenv("FLEXPRICE_API_KEY", ""))
         
         # App Settings
         self.DEBUG = app_settings.get("DEBUG", os.getenv("DEBUG", "false").lower() == "true")
         self.MAX_FILE_SIZE = app_settings.get("MAX_FILE_SIZE", int(os.getenv("MAX_FILE_SIZE", "50")))  # MB
         self.MAX_FILES_PER_ANALYSIS = app_settings.get("MAX_FILES_PER_ANALYSIS", int(os.getenv("MAX_FILES_PER_ANALYSIS", "5")))
         self.DEFAULT_MODEL = app_settings.get("DEFAULT_MODEL", os.getenv("DEFAULT_MODEL", "gemini-2.5-flash"))
-        
-        # Pathway Settings
-        self.PATHWAY_LICENSE_KEY = pathway_settings.get("PATHWAY_LICENSE_KEY", os.getenv("PATHWAY_LICENSE_KEY", ""))
-        self.EXTERNAL_MONITOR_URL = pathway_settings.get("EXTERNAL_MONITOR_URL", os.getenv("EXTERNAL_MONITOR_URL", ""))
-        self.MONITOR_INTERVAL = pathway_settings.get("MONITOR_INTERVAL", int(os.getenv("MONITOR_INTERVAL", "30")))
         
         # UI Settings
         try:
@@ -114,9 +106,7 @@ class AppSettings:
         """Validate API keys are present"""
         
         validations = {
-            "gemini": bool(self.GEMINI_API_KEY),
-            "flexprice": bool(self.FLEXPRICE_API_KEY),
-            "pathway": bool(self.PATHWAY_LICENSE_KEY)
+            "gemini": bool(self.GEMINI_API_KEY)
         }
         
         return validations
@@ -135,17 +125,3 @@ class AppSettings:
     def is_production(self) -> bool:
         """Check if running in production mode"""
         return not self.DEBUG
-    
-    def get_flexprice_config(self) -> Dict[str, str]:
-        """Get Flexprice configuration"""
-        
-        # Try to get base URL from secrets, fall back to environment or default
-        try:
-            base_url = st.secrets.get("api_keys", {}).get("FLEXPRICE_BASE_URL", "https://api.flexprice.com/v1")
-        except:
-            base_url = os.getenv("FLEXPRICE_BASE_URL", "https://api.flexprice.com/v1")
-        
-        return {
-            "api_key": self.FLEXPRICE_API_KEY,
-            "base_url": base_url
-        }

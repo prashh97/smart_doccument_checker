@@ -16,16 +16,6 @@ sys.path.insert(0, str(src_dir))
 # Import custom modules
 from src.document_processor import DocumentProcessor
 from src.llm_analyser import EnhancedConflictAnalyzer
-# Optional imports for development
-try:
-    from src.flexprice import FlexpriceClient
-except ImportError:
-    FlexpriceClient = None
-
-try:
-    from pathway_monitor import PathwayMonitor
-except ImportError:
-    PathwayMonitor = None
 
 # Import UI components
 from components.file_uploader import FileUploaderComponent
@@ -57,17 +47,6 @@ def initialize_session_state():
             'reports_generated': 0,
             'total_conflicts_found': 0
         }
-    if 'flexprice_events' not in st.session_state:
-        st.session_state.flexprice_events = []
-    if 'pathway_status' not in st.session_state:
-        st.session_state.pathway_status = {'connected': False, 'last_update': None}
-    if 'billing_session' not in st.session_state:
-        st.session_state.billing_session = {
-            'session_id': 'default_session',
-            'start_time': '2024-01-01T00:00:00Z',
-            'customer_id': 'demo_user',
-            'total_amount': 0.0
-        }
     if 'app_settings' not in st.session_state:
         st.session_state.app_settings = AppSettings()
     
@@ -79,8 +58,6 @@ def get_app_components():
     components = {
         'document_processor': DocumentProcessor(),
         'llm_analyzer': EnhancedConflictAnalyzer(),
-        'flexprice_client': FlexpriceClient() if FlexpriceClient else None,
-        'pathway_monitor': PathwayMonitor(),
         'file_uploader': FileUploaderComponent(),
         'conflict_display': ConflictDisplayComponent(),
         'usage_dashboard': UsageDashboardComponent(),
@@ -121,8 +98,6 @@ def main():
         
         st.divider()
         components['usage_dashboard'].render()
-        st.divider()
-        components['pathway_monitor'].render_monitor_status()
     
     # Main content area
     col1, col2 = st.columns([1, 1])
@@ -180,19 +155,9 @@ def analyze_documents(uploaded_files, selected_model, analysis_type, components)
         
         documents = components['document_processor'].process_uploaded_files(uploaded_files)
         
-        # Step 2: Track billing (optional)
-        status_text.text("💰 Processing billing...")
-        progress_bar.progress(35)
-        
-        try:
-            analysis_cost = components['flexprice_client'].track_document_analysis(len(uploaded_files))
-        except Exception as e:
-            st.warning(f"Billing tracking unavailable: {str(e)}")
-            analysis_cost = 0.0
-        
-        # Step 3: LLM Analysis
+        # Step 2: LLM Analysis
         status_text.text(f"🤖 Analyzing with {selected_model.upper()}...")
-        progress_bar.progress(60)
+        progress_bar.progress(40)
         
         conflicts = components['llm_analyzer'].analyze_documents_for_conflicts(
             documents, 
@@ -200,13 +165,13 @@ def analyze_documents(uploaded_files, selected_model, analysis_type, components)
             analysis_type=analysis_type
         )
         
-        # Step 4: Generate summary
+        # Step 3: Generate summary
         status_text.text("📊 Generating insights...")
-        progress_bar.progress(85)
+        progress_bar.progress(80)
         
         analysis_summary = components['llm_analyzer'].get_analysis_summary(conflicts)
         
-        # Step 5: Update results
+        # Step 4: Update results
         status_text.text("✅ Analysis complete!")
         progress_bar.progress(100)
         
@@ -214,7 +179,6 @@ def analyze_documents(uploaded_files, selected_model, analysis_type, components)
         st.session_state.analysis_results = {
             'documents': documents,
             'conflicts': conflicts,
-            'analysis_cost': analysis_cost,
             'selected_model': selected_model,
             'analysis_type': analysis_type,
             'analysis_summary': analysis_summary,

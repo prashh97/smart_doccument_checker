@@ -157,21 +157,11 @@ OPENAI_API_KEY = "your-openai-api-key-here"
 # Optional: Grok API key when available
 GROK_API_KEY = "your-grok-api-key-here"
 
-# Flexprice API key for billing integration
-FLEXPRICE_API_KEY = "your-flexprice-api-key-here"
-FLEXPRICE_BASE_URL = "https://api.flexprice.com/v1"
-
 [app_settings]
 DEBUG = false
 MAX_FILE_SIZE = 50  # MB
 MAX_FILES_PER_ANALYSIS = 5
 DEFAULT_MODEL = "gemini-2.5-flash"
-
-[pathway_settings]
-# Pathway license key for real-time monitoring
-PATHWAY_LICENSE_KEY = "your-pathway-license-key"
-EXTERNAL_MONITOR_URL = "https://example.com/policy-updates"
-MONITOR_INTERVAL = 30  # seconds
 
 [ui_settings]
 APP_TITLE = "Smart Doc Checker Agent"
@@ -262,8 +252,6 @@ def print_next_steps():
     print()
     print("4. 📚 API Keys needed:")
     print("   • Gemini API: https://makersuite.google.com/app/apikey")
-    print("   • Flexprice API: https://flexprice.com/api")
-    print("   • Pathway License: https://pathway.com (optional)")
     print()
     print("5. 📖 Documentation:")
     print("   • README.md - Project overview")
